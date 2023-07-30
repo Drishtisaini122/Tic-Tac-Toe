@@ -23,19 +23,23 @@ class _tictactoe1State extends State<tictactoe1> {
   ];
   int ohScore = 0;
   int exScore = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.pinkAccent[100],
         title: Center(
-          child: Text(
-            "TIC TAC TOE",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              fontFamily: "Merriweather",
+          child: Padding(
+            padding: const EdgeInsets.only(right: 45.0),
+            child: Text(
+              "TIC TAC TOE",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                fontFamily: "Merriweather",
+              ),
             ),
           ),
         ),
@@ -47,43 +51,55 @@ class _tictactoe1State extends State<tictactoe1> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Text("PLAYER X",
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    Text("PLAYER O",
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                  ]),
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Text("PLAYER X", style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text("PLAYER O", style: TextStyle(fontWeight: FontWeight.bold)),
+                ],
+              ),
             ),
             Container(
-              height: 560,
-              width: 560,
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: [Colors.pink, Colors.blue])),
-              child: GridView.builder(
-                  itemCount: 9,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3),
-                  itemBuilder: (BuildContext context, int index) {
-                    return GestureDetector(
-                      onTap: () {
-                        _tapped(index);
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.white)),
-                        child: Center(
-                          child: Text(
-                            display[index],
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 40,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
+              height: 400,
+              width: 400,
+              child: ClipRRect(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(colors: [Colors.pink, Colors.blue]),
+                  ),
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: GridView.builder(
+                      shrinkWrap: true, // Add this line to prevent overflow
+                      itemCount: 9,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
                       ),
-                    );
-                  }),
+                      itemBuilder: (BuildContext context, int index) {
+                        return GestureDetector(
+                          onTap: () {
+                            _tapped(index);
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.white),
+                            ),
+                            child: Center(
+                              child: Text(
+                                display[index],
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 40,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
             ),
           ],
         ),
@@ -144,36 +160,82 @@ class _tictactoe1State extends State<tictactoe1> {
         display[0] != '') {
       _showdialog(display[0]);
     }
+    bool isDraw = true;
+    for (int i = 0; i < display.length; i++) {
+      if (display[i] == '') {
+        isDraw = false;
+        break;
+      }
+    }
+
+    if (isDraw) {
+      _showdialog('DRAW');
+    }
   }
 
   void _showdialog(String winner) {
-    showDialog(
+    if (winner == 'DRAW') {
+      showDialog(
         barrierDismissible: false,
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            backgroundColor: Colors.tealAccent,
+            backgroundColor: Colors.pinkAccent[100],
             title: Text(
-              "WINNER IS " + winner,
+              "It's a DRAW!",
               style: TextStyle(
-                  backgroundColor: Colors.tealAccent,
-                  fontWeight: FontWeight.bold),
+                fontWeight: FontWeight.bold,
+              ),
             ),
             actions: <Widget>[
               FlatButton(
-                  child: Text("PLAY AGAIN",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  onPressed: () {
-                    _clearBoard();
-                    Navigator.of(context).pop();
-                  })
+                child: Text(
+                  "PLAY AGAIN",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                onPressed: () {
+                  _clearBoard();
+                  Navigator.of(context).pop();
+                },
+              )
             ],
           );
-        });
-    if (winner == 'O') {
-      ohScore += 1;
-    } else if (winner == 'X') {
-      exScore += 1;
+        },
+      );
+    } else {
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Colors.pinkAccent[100],
+            title: Text(
+              "WINNER IS " + winner,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(
+                  "PLAY AGAIN",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                onPressed: () {
+                  _clearBoard();
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        },
+      );
+
+      if (winner == 'O') {
+        ohScore += 1;
+      } else if (winner == 'X') {
+        exScore += 1;
+      }
     }
   }
 
@@ -185,3 +247,4 @@ class _tictactoe1State extends State<tictactoe1> {
     });
   }
 }
+

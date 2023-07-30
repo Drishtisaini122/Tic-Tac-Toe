@@ -37,7 +37,7 @@ class _ShowitState extends State<Showit> {
             children: <Widget>[
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 20.0),
+                  padding: const EdgeInsets.only(top: 40.0),
                   child: Container(
                     child: Text(
                       "TIC TAC TOE",
